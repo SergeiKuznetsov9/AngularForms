@@ -1,75 +1,57 @@
-<!--
-  Для того, чтобы получить сведения о форме, к ее шаблонной перемнной нужно присвоить диррективу
-  ngForm, которую предварительно вроде как нужно было бы закинуть в тег формы, т.е. сделать так,
-  как указано ниже. Однако дописывать ngForm - необязательно, Ангулар делает это автоматически.
-  Аналогично элементы формы делаются контролируемыми, но там обязательно нужно указывать ngModel,
-  как это и сделано.
+<!-- 
+  Здесь мы подключаем к форме созданный в классе объект.
+
+  Также необходимо связать поля с этим классом
+
+  Для того чтобы это все заработало необходимо заимпортировать ReactiveFormsModule в модуль
 -->
-<form #userForm="ngForm" ngForm (submit)="onSubmit(userForm)">
-
-  
-
+<form (submit)="onSubmit()" [formGroup]="userForm">
   <div class="controller">
     <label>
       Имя:
       <br />
-      <!--
-        записью #name="ngModel" мы связали переменную name с диррективой ngModel,
-        которая привязана к дом-элементу
-      -->
-      <input
-        type="text"
-        name="name"
-        [(ngModel)]="model.name"
-        #name="ngModel"
-        required
-        minlength="3"
-        maxlength="10"
-        (click)="showNameModel(name)"
-      />
-      <!--
-        благодаря записи #name="ngModel" мы теперь можем получить сведения о статусе поля:
-      -->
+      <input type="text" formControlName="name" />
       <div
+        *ngIf="
+          (userForm.get('name')?.hasError('required') &&
+            userForm.get('name')?.touched) ||
+          userForm.get('name')?.dirty
+        "
         class="alert"
-        *ngIf="name.invalid && (name.dirty || name.touched)"
       >
-        <div *ngIf="name.errors?.['required']">
-          Имя обязательно, дорогой!
-        </div>
-        <div *ngIf="name.errors?.['minlength']">
-          Имя должно быть длиннее 2-х символов
-        </div>
+        Обязательное поле
       </div>
     </label>
   </div>
 
   <div class="controller">
     <label>
-      Возраст:
+      Пароль:
       <br />
-      <input type="text" name="age" required [(ngModel)]="model.age" #age="ngModel" />
-      <div class="alert" *ngIf="age.invalid && age.dirty">И возраст обязателен!</div>
-    </label>
+      <input type="password" formControlName="password" />
 
+      <div
+        *ngIf="
+          userForm.get('password')?.hasError('required') &&
+          (userForm.get('password')?.touched || userForm.get('password')?.dirty)
+        "
+        class="alert"
+      >
+        Обязательное поле
+      </div>
+      <div
+        *ngIf="
+          userForm.get('password')?.hasError('minlength') &&
+          (userForm.get('password')?.touched || userForm.get('password')?.dirty)
+        "
+        class="alert"
+      >
+        Минимум 7 символов
+      </div>
+    </label>
   </div>
 
-  <div class="controller">
-    <label>
-      Роль:
-      <br />
-      <select name="role" [(ngModel)]="model.role">
-        <option *ngFor="let role of roles" [value]="role">{{ role }}</option>
-      </select>
-    </label>
-  </div>
-  <button
-    type="submit"
-    class="controller"
-    [disabled]="userForm.invalid"
-  >
-    Сохранить
-  </button>
+  <button type="submit" class="controller">Сохранить</button>
 </form>
 
-<p class="diagnostic">{{ this.model | json }}</p>
+<!-- <p class="diagnostic">{{ this.model | json }}</p> -->
