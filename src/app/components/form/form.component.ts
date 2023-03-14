@@ -1,11 +1,12 @@
 import { Component } from '@angular/core';
 import {
   FormBuilder,
-  FormControl,
   FormGroup,
+  ValidationErrors,
   Validators,
 } from '@angular/forms';
 import { User } from 'src/app/data/user';
+import { emailValidator, matchPasswordValidator, rangeValidator } from 'src/app/validators/customValidator';
 
 @Component({
   selector: 'app-form',
@@ -17,13 +18,27 @@ export class FormComponent {
   roles: string[] = ['Гость', 'Модератор', 'Администратор'];
   user: User = new User(1, null, null, null, null, null);
 
+
+  // Хорошо придерживаться такого паттерна, т.к. все названия можно менять из класса, т.е. не лезть в лэйаут
+  // Тоже самое неплохо создать для placeholder, также сообщения об успехе ввода
+  // Позже, все текстовые объекты целесообразно вынести в отдельный файл
+  formLabels = {
+    name: 'Имя',
+    password: 'Пароль',
+    matchPassword: 'Проверка пароля',
+    email: 'Емэил',
+    role: 'Роль',
+    age: 'Возраст',
+  };
+
   formErrors: any = {
     name: '',
     password: '',
+    matchPassword: '',
     email: '',
     role: '',
     age: '',
-  }
+  };
 
   validationMessages: any = {
     name: {
@@ -36,31 +51,87 @@ export class FormComponent {
       minlength: 'Min 7 chars',
       maxlength: 'Max 25 chars',
     },
+    matchPassword: {
+      required: 'Match Password is required',
+      matchPasswordValidator: 'Password doesn`t match'
+    },
     email: {
       required: 'Email is required',
-      email: 'Uncorrect email format',
+      emailValidator: 'Uncorrect email format',
     },
     age: {
       required: 'Age is required',
+      rangeValidator: 'from 1 to 122',
+      minRange: 'min 1',
+      maxRange: 'max 122'
     },
     role: {
       required: 'Role is required',
     },
-  }
+  };
 
   constructor(private formBuilder: FormBuilder) {}
 
+  ngOnInit() {
+    this.buildForm();
+  }
+
   private buildForm(): void {
     this.userForm = this.formBuilder.group({
-      name: [this.user.name, [Validators.required, Validators.minLength(4), Validators.maxLength(15)]],
-      password: [this.user.password, [Validators.required, Validators.minLength(7), Validators.maxLength(25)]],
-      email: [this.user.email, [Validators.required, Validators.email]],
-      age: [this.user.age, [Validators.required]],
+      name: [
+        this.user.name,
+        [
+          Validators.required,
+          Validators.minLength(4),
+          Validators.maxLength(15),
+        ],
+      ],
+      password: [
+        this.user.password,
+        [
+          Validators.required,
+          Validators.minLength(7),
+          Validators.maxLength(25),
+        ],
+      ],
+      matchPassword: [
+        '',
+        [
+          Validators.required,
+          matchPasswordValidator(this.userForm?.controls['password'].value),
+        ],
+      ],
+      email: [
+        this.user.email,
+        [
+          Validators.required,
+          emailValidator /* Validators.pattern(/^([a-zA-Z0-9_.\-])+@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,6})$/) */,
+        ],
+      ],
+      age: [this.user.age, [Validators.required, rangeValidator(1, 122)/* Validators.pattern(/^\d+$/) */]],
       role: [this.user.role, [Validators.required]],
     });
 
-    this.userForm.valueChanges.subscribe( () => this.onValueChanged())
+    this.userForm.valueChanges.subscribe(() => this.onValueChanged());
+  }
 
+  onValueChanged() {
+    
+    const form = this.userForm;
+
+    Object.keys(this.formErrors).forEach((field) => {
+      this.formErrors[field] = '';
+      const control = form?.get(field);
+
+      if (control && control.dirty && control.invalid) {
+        const messages = this.validationMessages[field];
+
+        Object.keys(control.errors as ValidationErrors).some((key) => {
+          const message = messages[key];
+          return (this.formErrors[field] = message);
+        });
+      }
+    });
   }
 
   onSubmit(): void {

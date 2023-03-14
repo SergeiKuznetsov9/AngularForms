@@ -8,45 +8,67 @@
 <form (submit)="onSubmit()" [formGroup]="userForm">
   <div class="controller">
     <label>
-      Имя:
+      {{ formLabels.name }}:
       <br />
       <input type="text" formControlName="name" />
-      <div
-        *ngIf="
-          (userForm.get('name')?.hasError('required') &&
-            userForm.get('name')?.touched) ||
-          userForm.get('name')?.dirty
-        "
-        class="alert"
-      >
-        Обязательное поле
+      <div *ngIf="formErrors.name" class="alert">{{ formErrors.name }}</div>
+    </label>
+  </div>
+
+  <div class="controller">
+    <label>
+      {{ formLabels.email }}:
+      <br />
+      <input type="email" formControlName="email" />
+      <div *ngIf="formErrors.email" class="alert">
+        {{ formErrors.email }}
       </div>
     </label>
   </div>
 
   <div class="controller">
     <label>
-      Пароль:
+      {{ formLabels.age }}:
       <br />
-      <input type="password" formControlName="password" />
-
-      <div
-        *ngIf="
-          userForm.get('password')?.hasError('required') &&
-          (userForm.get('password')?.touched || userForm.get('password')?.dirty)
-        "
-        class="alert"
-      >
-        Обязательное поле
+      <input type="text" formControlName="age" />
+      <div *ngIf="formErrors.age" class="alert">
+        {{ formErrors.age }}
       </div>
-      <div
-        *ngIf="
-          userForm.get('password')?.hasError('minlength') &&
-          (userForm.get('password')?.touched || userForm.get('password')?.dirty)
-        "
-        class="alert"
-      >
-        Минимум 7 символов
+    </label>
+  </div>
+
+  <div class="controller">
+    <label>
+      {{ formLabels.role }}:
+      <br />
+      <select formControlName="role">
+        <option value="null" selected disabled>Choose the role</option>
+        <option *ngFor="let role of roles">{{ role }}</option>
+      </select>
+      <div *ngIf="formErrors.role" class="alert">
+        {{ formErrors.role }}
+      </div>
+    </label>
+  </div>
+
+  <div class="controller">
+    <label>
+      {{ formLabels.password }}:
+      <br />
+      <input type="text" formControlName="password" />
+      <div *ngIf="formErrors.password" class="alert">
+        {{ formErrors.password }}
+      </div>
+    </label>
+  </div>
+
+  <div class="controller">
+    <label>
+      {{ formLabels.matchPassword }}:
+      <br />
+      <input type="text" formControlName="matchPassword" />
+      <div *ngIf="formErrors.matchPassword" class="alert">
+        {{ formErrors.matchPassword }}
       </div>
     </label>
   </div>
