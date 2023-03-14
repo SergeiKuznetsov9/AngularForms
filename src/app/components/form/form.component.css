@@ -1,0 +1,16 @@
+.controller {
+  margin-bottom: 15px;
+}
+
+.diagnostic {
+  background-color: aquamarine;
+  margin-top: 20px;
+}
+
+form .ng-valid {
+  border-bottom: 5px solid green;
+}
+
+form .ng-invalid {
+  border-bottom: 5px solid red;
+}

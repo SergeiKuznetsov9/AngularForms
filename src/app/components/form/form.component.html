@@ -1,0 +1,30 @@
+<form>
+  <div class="controller">
+    <label>
+      Имя:
+      <br />
+      <input type="text" name="name" required [(ngModel)]="model.name" />
+    </label>
+  </div>
+
+  <div class="controller">
+    <label>
+      Возраст:
+      <br />
+      <input type="text" name="age" required [(ngModel)]="model.age" />
+    </label>
+  </div>
+
+  <div class="controller">
+    <label>
+      Роль:
+      <br />
+      <select name="role" [(ngModel)]="model.role">
+        <option *ngFor="let role of roles" [value]="role">{{ role }}</option>
+      </select>
+    </label>
+  </div>
+  <button type="button" class="controller">Сохранить</button>
+</form>
+
+<p class="diagnostic">{{ this.model | json }}</p>
