@@ -14,3 +14,12 @@ form .ng-valid {
 form .ng-invalid {
   border-bottom: 5px solid red;
 }
+
+.alert {
+  background-color: rgb(233, 139, 139);
+}
+
+input, select {
+  width: 100%;
+  height: 30px;
+}

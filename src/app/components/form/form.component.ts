@@ -13,5 +13,8 @@ export class FormComponent {
 
 
 
+  errorsLog(d: any) {
+    console.log(d)
+  }
 
 }

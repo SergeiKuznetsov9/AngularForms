@@ -3,7 +3,35 @@
     <label>
       Имя:
       <br />
-      <input type="text" name="name" required [(ngModel)]="model.name" />
+      <!--
+        записью #name="ngModel" мы связали переменную name с диррективой ngModel,
+        которая привязана к дом-элементу
+      -->
+      <input
+        type="text"
+        name="name"
+        [(ngModel)]="model.name"
+        #name="ngModel"
+        required
+        minlength="3"
+        maxlength="10"
+
+        (click)="errorsLog(name)"
+      />
+      <!--
+        благодаря записи #name="ngModel" мы теперь можем получить сведения о статусе поля:
+      -->
+      <div
+        class="alert"
+        *ngIf="name.invalid && (name.dirty || name.touched)"
+      >
+        <div *ngIf="name.errors?.['required']">
+          Имя обязательно, дорогой!
+        </div>
+        <div *ngIf="name.errors?.['minlength']">
+          Имя должно быть длиннее 2-х символов
+        </div>
+      </div>
     </label>
   </div>
 
@@ -11,8 +39,10 @@
     <label>
       Возраст:
       <br />
-      <input type="text" name="age" required [(ngModel)]="model.age" />
+      <input type="text" name="age" required [(ngModel)]="model.age" #age="ngModel" />
+      <div class="alert" *ngIf="age.invalid && age.dirty">И возраст обязателен!</div>
     </label>
+
   </div>
 
   <div class="controller">
