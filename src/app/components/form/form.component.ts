@@ -11,9 +11,11 @@ export class FormComponent {
   roles: string[] = ['Гость', 'Модератор', 'Администратор']
   model: User = new User(1, '', '')
 
+  showNameModel(d: any) {
+    console.log(d)
+  }
 
-
-  errorsLog(d: any) {
+  onSubmit(d: any): void {
     console.log(d)
   }
 

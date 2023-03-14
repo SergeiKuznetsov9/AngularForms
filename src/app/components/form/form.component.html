@@ -1,4 +1,14 @@
-<form>
+<!--
+  Для того, чтобы получить сведения о форме, к ее шаблонной перемнной нужно присвоить диррективу
+  ngForm, которую предварительно вроде как нужно было бы закинуть в тег формы, т.е. сделать так,
+  как указано ниже. Однако дописывать ngForm - необязательно, Ангулар делает это автоматически.
+  Аналогично элементы формы делаются контролируемыми, но там обязательно нужно указывать ngModel,
+  как это и сделано
+-->
+<form #userForm="ngForm" ngForm (submit)="onSubmit(userForm)">
+
+  
+
   <div class="controller">
     <label>
       Имя:
@@ -15,8 +25,7 @@
         required
         minlength="3"
         maxlength="10"
-
-        (click)="errorsLog(name)"
+        (click)="showNameModel(name)"
       />
       <!--
         благодаря записи #name="ngModel" мы теперь можем получить сведения о статусе поля:
@@ -54,7 +63,13 @@
       </select>
     </label>
   </div>
-  <button type="button" class="controller">Сохранить</button>
+  <button
+    type="submit"
+    class="controller"
+    [disabled]="userForm.invalid"
+  >
+    Сохранить
+  </button>
 </form>
 
 <p class="diagnostic">{{ this.model | json }}</p>
