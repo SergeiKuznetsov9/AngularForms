@@ -1,6 +1,14 @@
-import { AbstractControl, FormControl, ValidationErrors, ValidatorFn } from '@angular/forms';
+import {
+  AbstractControl,
+  FormControl,
+  FormGroup,
+  ValidationErrors,
+  ValidatorFn,
+} from '@angular/forms';
 
-export function emailValidator(control: AbstractControl): { [key: string]: any } | null {
+export function emailValidator(
+  control: AbstractControl
+): { [key: string]: any } | null {
   const emailRegex =
     /^([a-zA-Z0-9_.\-])+@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,6})$/;
   const value = control.value;
@@ -15,24 +23,24 @@ export function emailValidator(control: AbstractControl): { [key: string]: any }
     };
 }
 
-export function rangeValidator(minValue: number, maxValue: number): ValidatorFn {
-
+export function rangeValidator(
+  minValue: number,
+  maxValue: number
+): ValidatorFn {
   return (control: AbstractControl): ValidationErrors | null => {
-    const value = +control.value
-    if (isNaN(value)) return {rangeValidator: {value}}
-    if(value < minValue) return {minRange: {value}}
-    if(value > maxValue) return {maxRange: {value}}
-    return null
-  }
+    const value = +control.value;
+    if (isNaN(value)) return { rangeValidator: { value } };
+    if (value < minValue) return { minRange: { value } };
+    if (value > maxValue) return { maxRange: { value } };
+    return null;
+  };
 }
 
-export function matchPasswordValidator(primePassword: string): ValidatorFn {
-  return (control: AbstractControl): ValidationErrors | null => {
-    console.log(primePassword)
-    console.log('hi')
-    return null
-  }
+export function matchPasswordValidator(
+  control: AbstractControl
+): ValidationErrors | null {
+  let password = control.get('password')?.value;
+  let matchPassword = control.get('matchPassword')?.value;
+
+  return password === matchPassword ? null : { notSame: true };
 }
-
-
-/* https://fireflysemantics.medium.com/validating-passwords-in-angular-reactive-forms-f0dc5637cb9b */

@@ -51,26 +51,28 @@
     </label>
   </div>
 
-  <div class="controller">
-    <label>
-      {{ formLabels.password }}:
-      <br />
-      <input type="text" formControlName="password" />
-      <div *ngIf="formErrors.password" class="alert">
-        {{ formErrors.password }}
-      </div>
-    </label>
-  </div>
+  <div formGroupName="passwords">
+    <div class="controller">
+      <label>
+        {{ formLabels.password }}:
+        <br />
+        <input type="text" formControlName="password" />
+        <div *ngIf="userForm.hasError('notSame', 'passwords')" class="alert">
+          Ошибочка
+        </div>
+      </label>
+    </div>
 
-  <div class="controller">
-    <label>
-      {{ formLabels.matchPassword }}:
-      <br />
-      <input type="text" formControlName="matchPassword" />
-      <div *ngIf="formErrors.matchPassword" class="alert">
-        {{ formErrors.matchPassword }}
-      </div>
-    </label>
+    <div class="controller">
+      <label>
+        {{ formLabels.matchPassword }}:
+        <br />
+        <input type="text" formControlName="matchPassword" />
+        <div *ngIf="userForm.hasError('notSame', 'passwords')" class="alert">
+          Ошибочка
+        </div>
+      </label>
+    </div>
   </div>
 
   <button type="submit" class="controller">Сохранить</button>

@@ -1,12 +1,18 @@
 import { Component } from '@angular/core';
 import {
+  AbstractControl,
   FormBuilder,
   FormGroup,
   ValidationErrors,
+  ValidatorFn,
   Validators,
 } from '@angular/forms';
 import { User } from 'src/app/data/user';
-import { emailValidator, matchPasswordValidator, rangeValidator } from 'src/app/validators/customValidator';
+import {
+  emailValidator,
+  matchPasswordValidator,
+  rangeValidator,
+} from 'src/app/validators/customValidator';
 
 @Component({
   selector: 'app-form',
@@ -17,7 +23,6 @@ export class FormComponent {
   userForm!: FormGroup;
   roles: string[] = ['Гость', 'Модератор', 'Администратор'];
   user: User = new User(1, null, null, null, null, null);
-
 
   // Хорошо придерживаться такого паттерна, т.к. все названия можно менять из класса, т.е. не лезть в лэйаут
   // Тоже самое неплохо создать для placeholder, также сообщения об успехе ввода
@@ -33,8 +38,9 @@ export class FormComponent {
 
   formErrors: any = {
     name: '',
-    password: '',
-    matchPassword: '',
+    passwords: '',
+    /* password: '',
+    matchPassword: '', */
     email: '',
     role: '',
     age: '',
@@ -53,7 +59,7 @@ export class FormComponent {
     },
     matchPassword: {
       required: 'Match Password is required',
-      matchPasswordValidator: 'Password doesn`t match'
+      matchPasswordValidator: 'Password doesn`t match',
     },
     email: {
       required: 'Email is required',
@@ -63,7 +69,7 @@ export class FormComponent {
       required: 'Age is required',
       rangeValidator: 'from 1 to 122',
       minRange: 'min 1',
-      maxRange: 'max 122'
+      maxRange: 'max 122',
     },
     role: {
       required: 'Role is required',
@@ -86,21 +92,22 @@ export class FormComponent {
           Validators.maxLength(15),
         ],
       ],
-      password: [
-        this.user.password,
-        [
-          Validators.required,
-          Validators.minLength(7),
-          Validators.maxLength(25),
-        ],
-      ],
-      matchPassword: [
-        '',
-        [
-          Validators.required,
-          matchPasswordValidator(this.userForm?.controls['password'].value),
-        ],
-      ],
+
+      passwords: this.formBuilder.group(
+        {
+          password: [
+            this.user.password,
+            [
+              Validators.required,
+              Validators.minLength(7),
+              Validators.maxLength(25),
+            ],
+          ],
+          matchPassword: ['', [Validators.required]],
+        },
+        { validators: matchPasswordValidator }
+      ),
+
       email: [
         this.user.email,
         [
@@ -108,18 +115,24 @@ export class FormComponent {
           emailValidator /* Validators.pattern(/^([a-zA-Z0-9_.\-])+@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,6})$/) */,
         ],
       ],
-      age: [this.user.age, [Validators.required, rangeValidator(1, 122)/* Validators.pattern(/^\d+$/) */]],
+      age: [
+        this.user.age,
+        [
+          Validators.required,
+          rangeValidator(1, 122) /* Validators.pattern(/^\d+$/) */,
+        ],
+      ],
       role: [this.user.role, [Validators.required]],
     });
 
-    this.userForm.valueChanges.subscribe(() => this.onValueChanged());
+    /* this.userForm.valueChanges.subscribe(() => this.onValueChanged()); */
   }
 
   onValueChanged() {
-    
     const form = this.userForm;
 
     Object.keys(this.formErrors).forEach((field) => {
+      console.log(field);
       this.formErrors[field] = '';
       const control = form?.get(field);
 
